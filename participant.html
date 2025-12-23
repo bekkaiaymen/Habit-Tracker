@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة المتسابق - تتبع العادات</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="container">
+        <header class="app-header">
+            <div class="top-bar">
+                <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-points">
+                            <span class="points-value" id="userPoints">0</span>
+                            <span class="points-label">نقطة</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="date-display" id="dateDisplay"></div>
+        </header>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span>التقدم اليومي</span>
+                <span class="progress-text" id="progressText">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="streak">0</div>
+                <div class="stat-label">سلسلة الأيام</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-value" id="totalCompleted">0</div>
+                <div class="stat-label">إجمالي العادات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="rank">-</div>
+                <div class="stat-label">الترتيب</div>
+            </div>
+        </div>
+        
+        <!-- Habits List -->
+        <div class="habits-section">
+            <div class="section-header">
+                <h3>عاداتي اليومية</h3>
+                <button class="add-habit-btn" onclick="showAddHabitModal()">+ إضافة عادة</button>
+            </div>
+            <div class="habits-list" id="habitsList"></div>
+        </div>
+
+        <!-- Rewards Section -->
+        <div class="rewards-section">
+            <h3>🎁 مكافآتي</h3>
+            <div class="rewards-list" id="rewardsList">
+                <p class="empty-state">لا توجد مكافآت بعد</p>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div class="history-section">
+            <h3>السجل الأسبوعي</h3>
+            <div class="history-grid" id="historyGrid"></div>
+        </div>
+
+        <!-- Detailed History Section -->
+        <div class="detailed-history-section">
+            <h3>📜 سجلي التفصيلي</h3>
+            <div class="date-filter">
+                <select id="historyDaysFilter" onchange="loadDetailedHistory()">
+                    <option value="7">آخر 7 أيام</option>
+                    <option value="14">آخر 14 يوم</option>
+                    <option value="30" selected>آخر 30 يوم</option>
+                    <option value="60">آخر 60 يوم</option>
+                </select>
+            </div>
+            <div class="detailed-history-list" id="detailedHistoryList"></div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="leaderboard-section">
+            <h3>🏅 ترتيب المتسابقين</h3>
+            <div class="leaderboard-list" id="leaderboardList"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn primary-btn" onclick="completeAllHabits()">✓ إكمال الكل</button>
+            <button class="action-btn secondary-btn" onclick="resetDay()">⟳ بدء يوم جديد</button>
+        </div>
+    </div>
+
+    <!-- Add Habit Modal -->
+    <div id="addHabitModal" class="modal">
+        <div class="modal-content">
+            <h3>إضافة عادة جديدة</h3>
+            <div class="form-group">
+                <label>اختر الأيقونة:</label>
+                <div class="icon-picker" id="iconPicker">
+                    <button onclick="selectIcon('💪')">💪</button>
+                    <button onclick="selectIcon('🏃')">🏃</button>
+                    <button onclick="selectIcon('🧘')">🧘</button>
+                    <button onclick="selectIcon('✍️')">✍️</button>
+                    <button onclick="selectIcon('🎓')">🎓</button>
+                    <button onclick="selectIcon('💻')">💻</button>
+                    <button onclick="selectIcon('🎨')">🎨</button>
+                    <button onclick="selectIcon('🎵')">🎵</button>
+                    <button onclick="selectIcon('🍎')">🍎</button>
+                    <button onclick="selectIcon('😴')">😴</button>
+                </div>
+                <input type="text" id="selectedIcon" value="💪" readonly class="input-field">
+            </div>
+            <div class="form-group">
+                <label>اسم العادة:</label>
+                <input type="text" id="habitName" placeholder="مثال: التمرين الرياضي" class="input-field">
+            </div>
+            <div class="form-group">
+                <label>الوصف:</label>
+                <input type="text" id="habitDesc" placeholder="مثال: 30 دقيقة يومياً" class="input-field">
+            </div>
+            <div class="form-group">
+                <label>النقاط عند الإكمال:</label>
+                <input type="number" id="habitPoints" value="10" min="1" class="input-field">
+            </div>
+            <div class="modal-actions">
+                <button onclick="addNewHabit()" class="submit-btn">إضافة</button>
+                <button onclick="hideAddHabitModal()" class="cancel-btn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="google-sheets-db.js"></script>
+    <script src="data.js"></script>
+    <script src="participant.js"></script>
+</body>
+</html>
