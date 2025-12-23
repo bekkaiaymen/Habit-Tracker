@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة العادات اليومية - تسجيل الدخول</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="container login-container">
+        <header class="app-header">
+            <div class="logo">🏆</div>
+            <h1>مسابقة العادات اليومية</h1>
+            <p class="subtitle">تنافس، تطور، واربح المكافآت!</p>
+        </header>
+
+        <header class="app-header">
+            <div class="logo">🏆</div>
+            <h1>مسابقة العادات اليومية</h1>
+            <p class="subtitle">تنافس، تطور، واربح المكافآت!</p>
+        </header>
+
+        <div class="login-section">
+            <div class="role-selector">
+                <button class="role-btn admin-role" onclick="showAdminLogin()">
+                    <div class="role-icon">👑</div>
+                    <div class="role-title">المسير</div>
+                    <div class="role-desc">إدارة المسابقة والمكافآت</div>
+                </button>
+                
+                <button class="role-btn participant-role" onclick="showParticipantLogin()">
+                    <div class="role-icon">🎯</div>
+                    <div class="role-title">متسابق</div>
+                    <div class="role-desc">تتبع عاداتك واربح النقاط</div>
+                </button>
+            </div>
+
+            <!-- Admin Login Form -->
+            <div id="adminLoginForm" class="login-form" style="display: none;">
+                <h3>تسجيل دخول المسير</h3>
+                <input type="password" id="adminPassword" placeholder="كلمة المرور" class="input-field">
+                <button onclick="loginAdmin()" class="submit-btn">دخول</button>
+                <button onclick="hideLoginForms()" class="cancel-btn">إلغاء</button>
+                <p class="hint">كلمة المرور الافتراضية: admin123</p>
+            </div>
+
+            <!-- Participant Login Form -->
+            <div id="participantLoginForm" class="login-form" style="display: none;">
+                <h3>تسجيل دخول المتسابق</h3>
+                <input type="text" id="participantName" placeholder="اسمك" class="input-field">
+                <button onclick="loginParticipant()" class="submit-btn">دخول</button>
+                <button onclick="hideLoginForms()" class="cancel-btn">إلغاء</button>
+            </div>
+        </div>
+
+        <!-- Leaderboard Preview -->
+        <div class="leaderboard-preview">
+            <h3>🏅 ترتيب المتسابقين</h3>
+            <div id="leaderboardList" class="preview-list"></div>
+        </div>
+
+        <footer class="app-footer">
+            <p>"العادات الصغيرة تصنع فرقاً كبيراً"</p>
+        </footer>
+    </div>
+
+    <script src="google-sheets-db.js"></script>
+    <script src="data.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>

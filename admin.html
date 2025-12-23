@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المسير</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="container admin-container">
+        <header class="app-header">
+            <div class="top-bar">
+                <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+                <div class="admin-badge">
+                    <div class="admin-icon">👑</div>
+                    <div class="admin-title">لوحة تحكم المسير</div>
+                </div>
+            </div>
+            <div class="date-display" id="dateDisplay"></div>
+        </header>
+
+        <!-- Overview Stats -->
+        <div class="overview-section">
+            <h2>📊 نظرة عامة</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="totalParticipants">0</div>
+                    <div class="stat-label">عدد المتسابقين</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="totalHabitsToday">0</div>
+                    <div class="stat-label">عادات مكتملة اليوم</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎁</div>
+                    <div class="stat-value" id="totalRewards">0</div>
+                    <div class="stat-label">إجمالي المكافآت</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="leaderboard-section">
+            <h2>🏆 ترتيب المتسابقين</h2>
+            <div class="leaderboard-full" id="leaderboardFull"></div>
+        </div>
+
+        <!-- Participants Management -->
+        <div class="participants-section">
+            <div class="section-header">
+                <h2>👥 إدارة المتسابقين</h2>
+                <button class="add-btn" onclick="showAddParticipantModal()">+ إضافة متسابق</button>
+            </div>
+            <div class="participants-grid" id="participantsGrid"></div>
+        </div>
+
+        <!-- Rewards Management -->
+        <div class="rewards-management">
+            <h2>🎁 إدارة المكافآت</h2>
+            <div class="reward-form">
+                <select id="rewardParticipant" class="input-field">
+                    <option value="">اختر المتسابق</option>
+                </select>
+                <input type="text" id="rewardTitle" placeholder="عنوان المكافأة" class="input-field">
+                <input type="number" id="rewardPoints" placeholder="عدد النقاط" class="input-field">
+                <button onclick="giveReward()" class="submit-btn">منح المكافأة</button>
+            </div>
+        </div>
+
+        <!-- Global Habits Management -->
+        <div class="global-habits-section">
+            <h2>📋 العادات الافتراضية للجميع</h2>
+            <div class="section-desc">هذه العادات ستظهر لجميع المتسابقين الجدد</div>
+            <div class="global-habits-list" id="globalHabitsList"></div>
+            <button class="add-btn" onclick="showAddGlobalHabitModal()">+ إضافة عادة افتراضية</button>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="activity-section">
+            <h2>📜 سجل الأنشطة</h2>
+            <div class="activity-log" id="activityLog"></div>
+        </div>
+
+        <!-- Detailed Competition History -->
+        <div class="competition-history-section">
+            <h2>📊 السجل التفصيلي للمسابقة</h2>
+            <div class="date-filter">
+                <label>عرض آخر:</label>
+                <select id="competitionHistoryDays" onchange="loadCompetitionHistory()">
+                    <option value="7">7 أيام</option>
+                    <option value="14">14 يوم</option>
+                    <option value="30" selected>30 يوم</option>
+                    <option value="60">60 يوم</option>
+                    <option value="90">90 يوم</option>
+                </select>
+            </div>
+            <div class="competition-history-list" id="competitionHistoryList"></div>
+        </div>
+    </div>
+
+    <!-- Add Participant Modal -->
+    <div id="addParticipantModal" class="modal">
+        <div class="modal-content">
+            <h3>إضافة متسابق جديد</h3>
+            <div class="form-group">
+                <label>اسم المتسابق:</label>
+                <input type="text" id="newParticipantName" placeholder="أدخل الاسم" class="input-field">
+            </div>
+            <div class="modal-actions">
+                <button onclick="addParticipant()" class="submit-btn">إضافة</button>
+                <button onclick="hideAddParticipantModal()" class="cancel-btn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Global Habit Modal -->
+    <div id="addGlobalHabitModal" class="modal">
+        <div class="modal-content">
+            <h3>إضافة عادة افتراضية</h3>
+            <div class="form-group">
+                <label>الأيقونة:</label>
+                <div class="icon-picker" id="globalIconPicker">
+                    <button onclick="selectGlobalIcon('💧')">💧</button>
+                    <button onclick="selectGlobalIcon('🕌')">🕌</button>
+                    <button onclick="selectGlobalIcon('📖')">📖</button>
+                    <button onclick="selectGlobalIcon('💪')">💪</button>
+                    <button onclick="selectGlobalIcon('🏃')">🏃</button>
+                    <button onclick="selectGlobalIcon('🧘')">🧘</button>
+                    <button onclick="selectGlobalIcon('✍️')">✍️</button>
+                    <button onclick="selectGlobalIcon('🎓')">🎓</button>
+                </div>
+                <input type="text" id="selectedGlobalIcon" value="💧" readonly class="input-field">
+            </div>
+            <div class="form-group">
+                <label>اسم العادة:</label>
+                <input type="text" id="globalHabitName" placeholder="مثال: شرب الماء" class="input-field">
+            </div>
+            <div class="form-group">
+                <label>الوصف:</label>
+                <input type="text" id="globalHabitDesc" placeholder="مثال: 8 أكواب يومياً" class="input-field">
+            </div>
+            <div class="form-group">
+                <label>النقاط:</label>
+                <input type="number" id="globalHabitPoints" value="10" min="1" class="input-field">
+            </div>
+            <div class="modal-actions">
+                <button onclick="addGlobalHabit()" class="submit-btn">إضافة</button>
+                <button onclick="hideAddGlobalHabitModal()" class="cancel-btn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participant Details Modal -->
+    <div id="participantDetailsModal" class="modal">
+        <div class="modal-content wide-modal">
+            <h3 id="participantDetailsName"></h3>
+            <div class="participant-details-content">
+                <div class="detail-stats">
+                    <div class="detail-stat">
+                        <span class="detail-label">النقاط الإجمالية:</span>
+                        <span class="detail-value" id="detailPoints">0</span>
+                    </div>
+                    <div class="detail-stat">
+                        <span class="detail-label">السلسلة:</span>
+                        <span class="detail-value" id="detailStreak">0</span>
+                    </div>
+                    <div class="detail-stat">
+                        <span class="detail-label">العادات المكتملة:</span>
+                        <span class="detail-value" id="detailCompleted">0</span>
+                    </div>
+                </div>
+                <div class="detail-habits">
+                    <h4>العادات اليومية:</h4>
+                    <div id="detailHabitsList"></div>
+                </div>
+                <div class="detail-rewards">
+                    <h4>المكافآت:</h4>
+                    <div id="detailRewardsList"></div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button onclick="hideParticipantDetailsModal()" class="cancel-btn">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="google-sheets-db.js"></script>
+    <script src="data.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
