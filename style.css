@@ -2003,6 +2003,92 @@ h1 {
     font-size: 0.85rem;
 }
 
+/* ==================== SYNC INDICATOR STYLES ==================== */
+
+.sync-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    z-index: 10000;
+    opacity: 0;
+    transition: all 0.3s ease;
+    border: 2px solid var(--border-color);
+}
+
+.sync-indicator.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.sync-icon {
+    font-size: 1.2rem;
+    animation: rotate 1s linear infinite;
+}
+
+.sync-indicator.status-synced .sync-icon,
+.sync-indicator.status-online .sync-icon,
+.sync-indicator.status-error .sync-icon,
+.sync-indicator.status-offline .sync-icon {
+    animation: none;
+}
+
+.sync-text {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
+
+.sync-indicator.status-syncing {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-color: #3b82f6;
+}
+
+.sync-indicator.status-syncing .sync-text {
+    color: white;
+}
+
+.sync-indicator.status-synced,
+.sync-indicator.status-online {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: #10b981;
+}
+
+.sync-indicator.status-synced .sync-text,
+.sync-indicator.status-online .sync-text {
+    color: white;
+}
+
+.sync-indicator.status-error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-color: #ef4444;
+}
+
+.sync-indicator.status-error .sync-text {
+    color: white;
+}
+
+.sync-indicator.status-offline {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-color: #f59e0b;
+}
+
+.sync-indicator.status-offline .sync-text {
+    color: white;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 /* ==================== ADDITIONAL RESPONSIVE ==================== */
 
 @media (max-width: 768px) {
