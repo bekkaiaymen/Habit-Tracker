@@ -25,22 +25,50 @@
         <!-- Overview Stats -->
         <div class="overview-section">
             <h2>📊 نظرة عامة</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
+            <div class="stats-grid admin-stats-grid">
+                <div class="stat-card primary-card">
                     <div class="stat-icon">👥</div>
                     <div class="stat-value" id="totalParticipants">0</div>
                     <div class="stat-label">عدد المتسابقين</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card success-card">
                     <div class="stat-icon">✅</div>
                     <div class="stat-value" id="totalHabitsToday">0</div>
                     <div class="stat-label">عادات مكتملة اليوم</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card warning-card">
                     <div class="stat-icon">🎁</div>
                     <div class="stat-value" id="totalRewards">0</div>
                     <div class="stat-label">إجمالي المكافآت</div>
                 </div>
+                <div class="stat-card info-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="activeToday">0</div>
+                    <div class="stat-label">نشط اليوم</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions-section">
+            <h3>⚡ إجراءات سريعة</h3>
+            <div class="quick-actions-grid">
+                <button class="quick-action-btn" onclick="showAddParticipantModal()">
+                    <div class="qa-icon">➕</div>
+                    <div class="qa-label">إضافة متسابق</div>
+                </button>
+                <button class="quick-action-btn" onclick="showAddGlobalHabitModal()">
+                    <div class="qa-icon">📋</div>
+                    <div class="qa-label">إضافة عادة عامة</div>
+                </button>
+                <button class="quick-action-btn" onclick="scrollToRewards()">
+                    <div class="qa-icon">🎁</div>
+                    <div class="qa-label">منح مكافأة</div>
+                </button>
+                <button class="quick-action-btn" onclick="window.location.reload()">
+                    <div class="qa-icon">🔄</div>
+                    <div class="qa-label">تحديث البيانات</div>
+                </button>
             </div>
         </div>
 

@@ -35,9 +35,26 @@ function displayDate() {
 
 async function loadOverviewStats() {
     const stats = await getStatistics();
+    const data = await getData();
+    const today = new Date().toDateString();
+    
+    let activeToday = 0;
+    data.participants.forEach(p => {
+        const progress = p.dailyProgress[today];
+        if (progress && Object.keys(progress).length > 0) {
+            activeToday++;
+        }
+    });
     
     document.getElementById('totalParticipants').textContent = stats.totalParticipants;
     document.getElementById('totalHabitsToday').textContent = stats.totalHabitsToday;
+    document.getElementById('totalRewards').textContent = stats.totalRewards;
+    
+    const activeTodayEl = document.getElementById('activeToday');
+    if (activeTodayEl) {
+        activeTodayEl.textContent = activeToday;
+    }
+}
     document.getElementById('totalRewards').textContent = stats.totalRewards;
 }
 
@@ -345,6 +362,14 @@ function logout() {
     if (confirm('هل تريد تسجيل الخروج؟')) {
         sessionStorage.clear();
         window.location.href = 'index.html';
+    }
+}
+
+// Scroll to rewards section
+function scrollToRewards() {
+    const rewardSection = document.querySelector('.reward-section');
+    if (rewardSection) {
+        rewardSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 

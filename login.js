@@ -3,6 +3,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
     displayDate();
     await updateLeaderboardPreview();
+    await updateQuickStats();
+    await populateParticipantSelect();
+    checkDirectLoginUrl();
 });
 
 function displayDate() {
@@ -24,6 +27,27 @@ function showParticipantLogin() {
     hideLoginForms();
     document.getElementById('participantLoginForm').style.display = 'block';
     document.getElementById('participantName').focus();
+    populateParticipantSelect();
+}
+
+async function populateParticipantSelect() {
+    const participants = await getAllParticipants();
+    const select = document.getElementById('participantSelect');
+    if (!select) return;
+    
+    let html = '<option value="">-- اختر من القائمة --</option>';
+    participants.forEach(p => {
+        html += `<option value="${p.name}">${p.name}</option>`;
+    });
+    select.innerHTML = html;
+}
+
+function selectParticipantFromList() {
+    const select = document.getElementById('participantSelect');
+    const nameInput = document.getElementById('participantName');
+    if (select.value) {
+        nameInput.value = select.value;
+    }
 }
 
 function hideLoginForms() {
@@ -90,6 +114,116 @@ async function updateLeaderboardPreview() {
     });
     
     listElement.innerHTML = html;
+}
+
+async function updateQuickStats() {
+    const data = await getData();
+    const participants = data.participants;
+    const today = new Date().toDateString();
+    
+    let activeToday = 0;
+    let totalHabits = 0;
+    
+    participants.forEach(p => {
+        totalHabits += p.habits.length;
+        const progress = p.dailyProgress[today];
+        if (progress && Object.keys(progress).length > 0) {
+            activeToday++;
+        }
+    });
+    
+    const totalParticipantsEl = document.getElementById('totalParticipantsCount');
+    const totalHabitsEl = document.getElementById('totalHabitsCount');
+    const activeTodayEl = document.getElementById('activeToday');
+    
+    if (totalParticipantsEl) totalParticipantsEl.textContent = participants.length;
+    if (totalHabitsEl) totalHabitsEl.textContent = totalHabits;
+    if (activeTodayEl) activeTodayEl.textContent = activeToday;
+}
+
+// Direct login URL handling
+function checkDirectLoginUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const participantName = urlParams.get('user');
+    
+    if (participantName) {
+        // Auto-login with provided name
+        setTimeout(() => {
+            document.getElementById('participantName').value = decodeURIComponent(participantName);
+            loginParticipant();
+        }, 500);
+    }
+}
+
+function showDirectLinks() {
+    document.getElementById('directLinksModal').style.display = 'flex';
+    generateDirectLinks();
+}
+
+function hideDirectLinksModal() {
+    document.getElementById('directLinksModal').style.display = 'none';
+}
+
+async function generateDirectLinks() {
+    const participants = await getAllParticipants();
+    const listElement = document.getElementById('directLinksList');
+    const baseUrl = window.location.origin + window.location.pathname;
+    
+    if (participants.length === 0) {
+        listElement.innerHTML = '<p class="empty-state">لا يوجد متسابقون بعد</p>';
+        return;
+    }
+    
+    let html = '';
+    participants.forEach(p => {
+        const directUrl = `${baseUrl}?user=${encodeURIComponent(p.name)}`;
+        html += `
+            <div class="link-item">
+                <div class="link-header">
+                    <span class="participant-name">👤 ${p.name}</span>
+                    <span class="link-status">🔗 رابط مباشر</span>
+                </div>
+                <div class="link-url-container">
+                    <input type="text" class="link-url" value="${directUrl}" readonly 
+                           onclick="copyToClipboard(this, '${p.name}')">
+                    <button class="copy-btn" onclick="copyToClipboard(document.querySelector('.link-url[value*=\\'${encodeURIComponent(p.name)}\\']'), '${p.name}')">
+                        📋 نسخ
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    listElement.innerHTML = html;
+}
+
+function copyToClipboard(element, participantName) {
+    element.select();
+    element.setSelectionRange(0, 99999); // For mobile devices
+    
+    navigator.clipboard.writeText(element.value).then(() => {
+        showCopyNotification(participantName);
+    }).catch(() => {
+        // Fallback for older browsers
+        document.execCommand('copy');
+        showCopyNotification(participantName);
+    });
+}
+
+function showCopyNotification(participantName) {
+    const notification = document.createElement('div');
+    notification.className = 'copy-notification';
+    notification.innerHTML = `✅ تم نسخ رابط ${participantName}`;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
 }
 
 // Handle Enter key

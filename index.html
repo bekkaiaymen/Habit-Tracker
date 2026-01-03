@@ -6,21 +6,17 @@
     <title>مسابقة العادات اليومية - تسجيل الدخول</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏆</text></svg>">
 </head>
 <body>
     <div class="background-pattern"></div>
     
     <div class="container login-container">
         <header class="app-header">
-            <div class="logo">🏆</div>
+            <div class="logo animated-logo">🏆</div>
             <h1>مسابقة العادات اليومية</h1>
             <p class="subtitle">تنافس، تطور، واربح المكافآت!</p>
-        </header>
-
-        <header class="app-header">
-            <div class="logo">🏆</div>
-            <h1>مسابقة العادات اليومية</h1>
-            <p class="subtitle">تنافس، تطور، واربح المكافآت!</p>
+            <div class="date-display" id="dateDisplay"></div>
         </header>
 
         <div class="login-section">
@@ -50,9 +46,37 @@
             <!-- Participant Login Form -->
             <div id="participantLoginForm" class="login-form" style="display: none;">
                 <h3>تسجيل دخول المتسابق</h3>
-                <input type="text" id="participantName" placeholder="اسمك" class="input-field">
+                <div class="quick-select-section">
+                    <label>اختر اسمك من القائمة:</label>
+                    <select id="participantSelect" class="input-field" onchange="selectParticipantFromList()">
+                        <option value="">-- اختر من القائمة --</option>
+                    </select>
+                </div>
+                <div class="or-divider">أو</div>
+                <input type="text" id="participantName" placeholder="أدخل اسمك يدوياً" class="input-field">
                 <button onclick="loginParticipant()" class="submit-btn">دخول</button>
                 <button onclick="hideLoginForms()" class="cancel-btn">إلغاء</button>
+                <div class="direct-link-section">
+                    <p class="hint-link">💡 <strong>للدخول المباشر:</strong></p>
+                    <button onclick="showDirectLinks()" class="show-links-btn">عرض روابط الدخول المباشر</button>
+                </div>
+            </div>
+
+            <!-- Direct Links Modal -->
+            <div id="directLinksModal" class="modal" style="display: none;">
+                <div class="modal-content wide-modal">
+                    <div class="modal-header">
+                        <h3>🔗 روابط الدخول المباشر للمتسابقين</h3>
+                        <button class="close-modal" onclick="hideDirectLinksModal()">✖</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="info-text">يمكن لكل متسابق حفظ رابطه الخاص للدخول المباشر:</p>
+                        <div id="directLinksList" class="direct-links-list"></div>
+                        <div class="copy-notice">
+                            <p>📋 اضغط على الرابط لنسخه تلقائياً</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -60,6 +84,22 @@
         <div class="leaderboard-preview">
             <h3>🏅 ترتيب المتسابقين</h3>
             <div id="leaderboardList" class="preview-list"></div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalParticipantsCount">0</div>
+                <div class="stat-label">متسابق</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalHabitsCount">0</div>
+                <div class="stat-label">عادة يومية</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="activeToday">0</div>
+                <div class="stat-label">نشط اليوم</div>
+            </div>
         </div>
 
         <footer class="app-footer">

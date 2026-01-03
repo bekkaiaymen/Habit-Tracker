@@ -22,6 +22,7 @@ function checkAuth() {
 
 async function initializePage() {
     displayDate();
+    displayMotivationalQuote();
     await loadUserInfo();
     await loadHabits();
     await updateProgress();
@@ -55,9 +56,15 @@ async function loadHabits() {
     
     const habitsList = document.getElementById('habitsList');
     let html = '';
+    let completedCount = 0;
+    let todayPoints = 0;
     
     participant.habits.forEach(habit => {
         const isCompleted = progress[habit.id] || false;
+        if (isCompleted) {
+            completedCount++;
+            todayPoints += habit.points;
+        }
         html += `
             <div class="habit-item ${isCompleted ? 'completed' : ''}" data-habit="${habit.id}">
                 <div class="habit-content">
@@ -75,6 +82,11 @@ async function loadHabits() {
     });
     
     habitsList.innerHTML = html;
+    
+    // Update summary
+    document.getElementById('completedCount').textContent = completedCount;
+    document.getElementById('pendingCount').textContent = participant.habits.length - completedCount;
+    document.getElementById('todayPoints').textContent = todayPoints;
 }
 
 async function toggleHabit(habitId) {
@@ -344,6 +356,28 @@ function logout() {
     if (confirm('هل تريد تسجيل الخروج؟')) {
         sessionStorage.clear();
         window.location.href = 'index.html';
+    }
+}
+
+// Motivational quotes
+function displayMotivationalQuote() {
+    const quotes = [
+        "العادات الصغيرة تصنع تغييرات كبيرة",
+        "النجاح هو مجموع الجهود الصغيرة المتكررة يومياً",
+        "لا تكسر سلسلتك، واصل التقدم",
+        "كل يوم هو فرصة جديدة لتكون أفضل",
+        "الالتزام هو الفرق بين الهدف والإنجاز",
+        "تذكر لماذا بدأت",
+        "التكرار هو أم المهارة",
+        "ابدأ صغيراً، فكر كبيراً، لا تتأخر",
+        "التقدم أهم من الكمال",
+        "عادة واحدة في كل مرة، نجاح واحد في كل مرة"
+    ];
+    
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    const quoteElement = document.getElementById('motivationalQuote');
+    if (quoteElement) {
+        quoteElement.textContent = randomQuote;
     }
 }
 

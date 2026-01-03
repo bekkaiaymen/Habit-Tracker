@@ -65,6 +65,28 @@
                 <button class="add-habit-btn" onclick="showAddHabitModal()">+ إضافة عادة</button>
             </div>
             <div class="habits-list" id="habitsList"></div>
+            <div class="habits-summary">
+                <div class="summary-item">
+                    <span class="summary-label">مكتملة:</span>
+                    <span class="summary-value completed" id="completedCount">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">متبقية:</span>
+                    <span class="summary-value pending" id="pendingCount">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">نقاط اليوم:</span>
+                    <span class="summary-value points" id="todayPoints">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Motivational Quote -->
+        <div class="motivation-section">
+            <div class="quote-container">
+                <div class="quote-icon">💫</div>
+                <p class="quote-text" id="motivationalQuote"></p>
+            </div>
         </div>
 
         <!-- Rewards Section -->
