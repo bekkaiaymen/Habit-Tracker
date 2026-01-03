@@ -55,8 +55,6 @@ async function loadOverviewStats() {
         activeTodayEl.textContent = activeToday;
     }
 }
-    document.getElementById('totalRewards').textContent = stats.totalRewards;
-}
 
 async function loadLeaderboard() {
     const leaderboard = await getLeaderboard();
